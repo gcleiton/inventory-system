@@ -1,0 +1,40 @@
+name: inventory_system
+description: Inventory System with PostgreSQL
+
+publish_to: 'none' 
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # UI
+  unicons: any
+
+  # Dependency Injection and Routing
+  flutter_modular: ^2.0.1
+  
+  # Comparator
+  equatable: any
+
+  # Functional programming features
+  dartz: any
+
+  # State management
+  mobx: any
+  flutter_mobx: any
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+    
+  # Code generation for MobX
+  build_runner:
+  mobx_codegen:
+
+flutter:
+  uses-material-design: true
