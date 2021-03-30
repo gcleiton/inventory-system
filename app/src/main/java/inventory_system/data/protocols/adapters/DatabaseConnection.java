@@ -1,7 +1,5 @@
-package inventory_system.data.protocols.database;
+package inventory_system.data.protocols.adapters;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -16,4 +14,5 @@ public interface DatabaseConnection {
 
     public List<Map<String, Object>> select (String query) throws SQLException;
     public List<Map<String, Object>> select (String query, List<String> params) throws SQLException;
+
 }

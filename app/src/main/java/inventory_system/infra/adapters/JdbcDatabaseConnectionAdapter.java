@@ -1,6 +1,6 @@
 package inventory_system.infra.adapters;
 
-import inventory_system.data.protocols.database.DatabaseConnection;
+import inventory_system.data.protocols.adapters.DatabaseConnection;
 import inventory_system.main.config.Environment;
 
 import java.sql.*;
@@ -19,15 +19,30 @@ public class JdbcDatabaseConnectionAdapter implements DatabaseConnection {
     }
 
     @Override
-    public void connect () throws SQLException, ClassNotFoundException {
-        Class.forName(driver);
-        this.connection = DriverManager.getConnection(buildUri(), configs.get("username"), configs.get("password"));
+    public void connect () {
+        try {
+            Class.forName(driver);
+            this.connection = DriverManager.getConnection(buildUri(), configs.get("username"), configs.get("password"));
+
+        } catch (SQLException e) {
+            System.out.println("Could not establish a connection to the database.");
+            e.printStackTrace();
+
+        } catch (ClassNotFoundException e) {
+            System.out.println("Driver not found.");
+        }
     }
 
     @Override
-    public void disconnect () throws SQLException{
-        this.connection.close();
-        this.connection = null;
+    public void disconnect () {
+        try {
+            this.connection.close();
+            this.connection = null;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public boolean isConnected () throws SQLException {
@@ -58,13 +73,13 @@ public class JdbcDatabaseConnectionAdapter implements DatabaseConnection {
     private void setParams (PreparedStatement statement, List<String> params) throws SQLException {
         if (params != null) {
             for (int i = 0; i < params.size(); i++) {
-                bindParam(statement, i, params.get(i));
+                this.bindParam(statement, i + 1, params.get(i));
             }
         }
     }
 
     private void bindParam (PreparedStatement statement, int key, String value) throws SQLException {
-        statement.setString(key, value);
+        statement.setObject(key, value);
     }
 
     private PreparedStatement buildStatement (String query) throws SQLException {
