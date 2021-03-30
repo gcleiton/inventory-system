@@ -17,4 +17,6 @@ public interface ProductRepository {
 
     public void delete (String code) throws SQLException;
 
+    public List<Entity> loadQuantityReports (String code) throws SQLException;
+
 }

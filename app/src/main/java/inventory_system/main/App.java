@@ -13,7 +13,59 @@ import java.util.List;
 
 public class App {
     public static void main(String[] args) {
-        testUpdateProductUseCase();
+        testLoadQuantityReports();
+    }
+
+    public static void testLoadQuantityReports() {
+        try {
+            // Parte de conexão do banco de dados. Além disso, conn será injetado no repositório
+            DatabaseConnection conn = AdapterFactory.makeDatabaseConnection();
+            conn.connect();
+
+            ProductRepository productRepository = RepositoryFactory.makeProductRepository(conn);
+            QuantityReportRepository quantityReportRepository = RepositoryFactory.makeQuantityReportRepository(conn);
+            UpdateProduct updateProduct = UseCaseFactory.makeUpdateProductUseCase(productRepository, quantityReportRepository);
+
+            // O método de criação precisa receber uma instância de Entity. Para tanto, é realizado o preenchimento dos dados
+            Entity newEntity = EntityFactory.makeEntity();
+            newEntity.setAtribute("code", "155182");
+            newEntity.setAtribute("name", "Teste");
+            newEntity.setAtribute("description", "Teste da Intel");
+            newEntity.setAtribute("quantity", 15);
+            newEntity.setAtribute("brand_id", 1);
+            newEntity.setAtribute("status_id", 1);
+
+            // Operação insert
+            productRepository.add(newEntity);
+
+            // Operação de busca pelo código
+            Entity product = productRepository.loadByCode("155182");
+            System.out.println("\nDados do produto criado: ");
+            System.out.println(product.getAttributes());
+
+            product.setAtribute("quantity", 16);
+            updateProduct.update("155182", product);
+
+            product.setAtribute("quantity", 12);
+            updateProduct.update("155182", product);
+
+            product.setAtribute("quantity", 12);
+            updateProduct.update("155182", product);
+
+            product = productRepository.loadByCode("155182");
+            System.out.println("\nDados do produto atualizado: ");
+            System.out.println(product.getAttributes());
+
+            List<Entity> reports = productRepository.loadQuantityReports("155182");
+            for (Entity report : reports) {
+                System.out.println(report.getAttributes());
+            }
+
+            productRepository.delete("155182");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static void testUpdateProductUseCase() {

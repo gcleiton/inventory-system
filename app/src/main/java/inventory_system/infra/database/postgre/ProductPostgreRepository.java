@@ -68,6 +68,12 @@ public class ProductPostgreRepository implements ProductRepository {
         this.connection.execute(query);
     }
 
+    public List<Entity> loadQuantityReports (String code) throws SQLException {
+        String query = "SELECT * FROM quantity_reports WHERE product_id = '" + code + "'";
+        List<Map<String, Object>> data = this.connection.select(query);
+        return EntityFactory.makeEntities(data);
+    }
+
     private List<String> getValues (Entity entity) {
         List<String> params = new ArrayList<>();
 
