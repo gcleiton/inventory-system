@@ -60,12 +60,12 @@ public class ProductPostgreRepository implements ProductRepository {
     }
 
     public void delete (String code) throws SQLException {
-        String query = "DELETE from products WHERE code = ?";
+        String reportsQuery = "DELETE from quantity_reports WHERE product_id = '" + code + "'";
+        this.connection.execute(reportsQuery);
 
-        List<String> params = new ArrayList<>();
-        params.add(code);
+        String query = "DELETE from products WHERE code = '" + code + "'";
 
-        this.connection.execute(query, params);
+        this.connection.execute(query);
     }
 
     private List<String> getValues (Entity entity) {

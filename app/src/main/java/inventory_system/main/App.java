@@ -3,15 +3,60 @@ package inventory_system.main;
 import inventory_system.data.protocols.adapters.DatabaseConnection;
 import inventory_system.data.protocols.database.*;
 import inventory_system.domain.entities.Entity;
+import inventory_system.domain.usecases.UpdateProduct;
 import inventory_system.main.factories.AdapterFactory;
 import inventory_system.main.factories.EntityFactory;
 import inventory_system.main.factories.RepositoryFactory;
+import inventory_system.main.factories.UseCaseFactory;
 
 import java.util.List;
 
 public class App {
     public static void main(String[] args) {
-        test();
+        testUpdateProductUseCase();
+    }
+
+    public static void testUpdateProductUseCase() {
+        try {
+            // Parte de conexão do banco de dados. Além disso, conn será injetado no repositório
+            DatabaseConnection conn = AdapterFactory.makeDatabaseConnection();
+            conn.connect();
+
+            ProductRepository productRepository = RepositoryFactory.makeProductRepository(conn);
+            QuantityReportRepository quantityReportRepository = RepositoryFactory.makeQuantityReportRepository(conn);
+            UpdateProduct updateProduct = UseCaseFactory.makeUpdateProductUseCase(productRepository, quantityReportRepository);
+
+            // O método de criação precisa receber uma instância de Entity. Para tanto, é realizado o preenchimento dos dados
+            Entity newEntity = EntityFactory.makeEntity();
+            newEntity.setAtribute("code", "158319");
+            newEntity.setAtribute("name", "Processador");
+            newEntity.setAtribute("description", "Processador da Intel");
+            newEntity.setAtribute("quantity", 15);
+            newEntity.setAtribute("brand_id", 1);
+            newEntity.setAtribute("status_id", 1);
+
+            // Operação insert
+            productRepository.add(newEntity);
+
+            // Operação de busca pelo código
+            Entity product = productRepository.loadByCode("158319");
+            System.out.println("\nDados do produto criado: ");
+            System.out.println(product.getAttributes());
+
+            product.setAtribute("quantity", 16);
+
+            // Operação de atualização do produto
+            updateProduct.update("158319", product);
+
+            product = productRepository.loadByCode("158319");
+            System.out.println("\nDados do produto atualizado: ");
+            System.out.println(product.getAttributes());
+
+            productRepository.delete("158319");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static void test () {
@@ -21,6 +66,8 @@ public class App {
             conn.connect();
 
             ProductRepository productRepository = RepositoryFactory.makeProductRepository(conn);
+
+            productRepository.delete("158319");
 
             // O método de criação precisa receber uma instância de Entity. Para tanto, é realizado o preenchimento dos dados
             Entity newEntity = EntityFactory.makeEntity();
