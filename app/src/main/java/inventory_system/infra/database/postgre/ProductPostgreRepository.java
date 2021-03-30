@@ -5,7 +5,6 @@ import inventory_system.data.protocols.database.ProductRepository;
 import inventory_system.domain.entities.Entity;
 import inventory_system.main.factories.EntityFactory;
 
-import java.sql.Array;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -83,6 +82,25 @@ public class ProductPostgreRepository implements ProductRepository {
 
         List<Map<String, Object>> data = this.connection.select(query);
         return EntityFactory.makeEntities(data);
+    }
+
+    public void attachCategories (String code, List<Integer> categoryIds) throws SQLException {
+        String removeQuery = "DELETE FROM category_product WHERE product_id = '" + code + "'";
+        this.connection.execute(removeQuery);
+
+        for (int categoryId : categoryIds) {
+            this.attachCategory(code, categoryId);
+        }
+    }
+
+    private void attachCategory (String code, int categoryId) throws SQLException {
+        String query = "INSERT INTO category_product (category_id, product_id) VALUES (?::integer, ?)";
+
+        List<String> params = new ArrayList<>();
+        params.add(String.valueOf(categoryId));
+        params.add(code);
+
+        this.connection.execute(query, params);
     }
 
     private List<String> getValues (Entity entity) {

@@ -21,4 +21,6 @@ public interface ProductRepository {
 
     public List<Entity> loadCategories (String code) throws SQLException;
 
+    public void attachCategories (String code, List<Integer> categoryIds) throws SQLException;
+
 }

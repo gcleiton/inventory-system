@@ -9,11 +9,47 @@ import inventory_system.main.factories.EntityFactory;
 import inventory_system.main.factories.RepositoryFactory;
 import inventory_system.main.factories.UseCaseFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class App {
     public static void main(String[] args) {
-        testLoadCategories();
+        testAttachCategories();
+    }
+
+    public static void testAttachCategories () {
+        try {
+            // Parte de conexão do banco de dados. Além disso, conn será injetado no repositório
+            DatabaseConnection conn = AdapterFactory.makeDatabaseConnection();
+            conn.connect();
+
+            ProductRepository productRepository = RepositoryFactory.makeProductRepository(conn);
+
+            // Operação de busca pelo código
+            Entity product = productRepository.loadByCode("918123");
+            System.out.println("\nDados do produto: ");
+            System.out.println(product.getAttributes());
+
+            List<Entity> categories = productRepository.loadCategories("918123");
+            System.out.println("\nDados das categorias do produto: ");
+            for (Entity category : categories) {
+                System.out.println(category.getAttributes());
+            }
+
+            List<Integer> categoryIds = new ArrayList<Integer>();
+            categoryIds.add(1);
+
+            productRepository.attachCategories("918123", categoryIds);
+
+            categories = productRepository.loadCategories("918123");
+            System.out.println("\nDados das categorias do produto depois do attach: ");
+            for (Entity category : categories) {
+                System.out.println(category.getAttributes());
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static void testLoadCategories () {
