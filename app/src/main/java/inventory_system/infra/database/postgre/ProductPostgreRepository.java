@@ -31,7 +31,11 @@ public class ProductPostgreRepository implements ProductRepository {
 
         List<Map<String, Object>> result = this.connection.select(query, params);
 
-        return EntityFactory.makeEntity(result.get(0));
+        if (result.size() > 0) {
+            return EntityFactory.makeEntity(result.get(0));
+        }
+
+        return null;
     }
 
     public void add (Entity entity) throws SQLException {

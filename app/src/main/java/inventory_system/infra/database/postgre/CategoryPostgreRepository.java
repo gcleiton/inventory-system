@@ -30,14 +30,16 @@ public class CategoryPostgreRepository implements CategoryRepository {
 
         List<Map<String, Object>> result = this.connection.select(query, params);
 
-        return EntityFactory.makeEntity(result.get(0));
+        if (result.size() > 0) {
+            return EntityFactory.makeEntity(result.get(0));
+        }
+
+        return null;
     }
 
     public void add (Entity entity) throws SQLException {
         String query = "INSERT INTO categories (name, description) VALUES (?, ?)";
-        List<String> params = new ArrayList<String>();
-        params.add(entity.getAttribute("name").toString());
-        params.add(entity.getAttribute("description").toString());
+        List<String> params = this.getValues(entity);
 
         this.connection.execute(query, params);
     }
@@ -45,9 +47,7 @@ public class CategoryPostgreRepository implements CategoryRepository {
     public void update (int id, Entity entity) throws SQLException {
         String query = "UPDATE categories SET name = ?, description = ? WHERE id = ?::integer";
 
-        List<String> params = new ArrayList<String>();
-        params.add(entity.getAttribute("name").toString());
-        params.add(entity.getAttribute("description").toString());
+        List<String> params = this.getValues(entity);
         params.add(String.valueOf(id));
 
         this.connection.execute(query, params);
@@ -60,6 +60,25 @@ public class CategoryPostgreRepository implements CategoryRepository {
         params.add(String.valueOf(id));
 
         this.connection.execute(query, params);
+    }
+
+    private List<String> getValues (Entity entity) {
+        List<String> params = new ArrayList<>();
+
+        List<String> columns = this.getAvailableColumns();
+
+        for (String column : columns) {
+            params.add((String) entity.getAttribute(column));
+        }
+
+        return params;
+    }
+
+    private List<String> getAvailableColumns () {
+        return new ArrayList<>() {{
+            add("name");
+            add("description");
+        }};
     }
 
 }
