@@ -74,6 +74,17 @@ public class ProductPostgreRepository implements ProductRepository {
         return EntityFactory.makeEntities(data);
     }
 
+    public List<Entity> loadCategories (String code) throws SQLException {
+        String query = "SELECT DISTINCT c.id, c.name, c.description, c.created_at, c.updated_at " +
+                "FROM categories c " +
+                "JOIN category_product cp ON c.id = cp.category_id " +
+                "JOIN products p ON p.code = cp.product_id " +
+                "where p.code = '" + code + "'";
+
+        List<Map<String, Object>> data = this.connection.select(query);
+        return EntityFactory.makeEntities(data);
+    }
+
     private List<String> getValues (Entity entity) {
         List<String> params = new ArrayList<>();
 

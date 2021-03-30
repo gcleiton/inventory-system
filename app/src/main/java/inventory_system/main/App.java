@@ -13,7 +13,31 @@ import java.util.List;
 
 public class App {
     public static void main(String[] args) {
-        testLoadQuantityReports();
+        testLoadCategories();
+    }
+
+    public static void testLoadCategories () {
+        try {
+            // Parte de conexão do banco de dados. Além disso, conn será injetado no repositório
+            DatabaseConnection conn = AdapterFactory.makeDatabaseConnection();
+            conn.connect();
+
+            ProductRepository productRepository = RepositoryFactory.makeProductRepository(conn);
+
+            // Operação de busca pelo código
+            Entity product = productRepository.loadByCode("918123");
+            System.out.println("\nDados do produto: ");
+            System.out.println(product.getAttributes());
+
+            List<Entity> categories = productRepository.loadCategories("918123");
+            System.out.println("\nDados das categorias do produto: ");
+            for (Entity category : categories) {
+                System.out.println(category.getAttributes());
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static void testLoadQuantityReports() {

@@ -19,4 +19,6 @@ public interface ProductRepository {
 
     public List<Entity> loadQuantityReports (String code) throws SQLException;
 
+    public List<Entity> loadCategories (String code) throws SQLException;
+
 }
