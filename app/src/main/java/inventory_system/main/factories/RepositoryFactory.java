@@ -26,4 +26,8 @@ public class RepositoryFactory {
         return new ProductPostgreRepository(connection);
     }
 
+    public static QuantityReportRepository makeQuantityReportRepository (DatabaseConnection connection) {
+        return new QuantityReportPostgreRepository(connection);
+    }
+
 }
