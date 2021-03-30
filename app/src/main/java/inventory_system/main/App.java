@@ -3,6 +3,7 @@ package inventory_system.main;
 import inventory_system.data.protocols.adapters.DatabaseConnection;
 import inventory_system.data.protocols.database.BrandRepository;
 import inventory_system.data.protocols.database.StatusRepository;
+import inventory_system.data.protocols.database.UnitRepository;
 import inventory_system.domain.entities.Entity;
 import inventory_system.main.factories.AdapterFactory;
 import inventory_system.main.factories.EntityFactory;
@@ -18,31 +19,33 @@ public class App {
             DatabaseConnection conn = AdapterFactory.makeDatabaseConnection();
             conn.connect();
 
-            BrandRepository brandRepository = RepositoryFactory.makeBrandRepository(conn);
+            UnitRepository unitRepository = RepositoryFactory.makeUnitRepository(conn);
 
             Entity newEntity = EntityFactory.makeEntity();
+            newEntity.setAtribute("abbreviation", "rb");
             newEntity.setAtribute("name", "teste");
-            newEntity.setAtribute("description", "Nike - Marca esportiva");
+            newEntity.setAtribute("description", "Medida para medir");
 
-            brandRepository.add(newEntity);
+            unitRepository.add(newEntity);
 
-            Entity brand = brandRepository.loadById(1);
-            System.out.println(brand.getAttributes());
+            Entity unit = unitRepository.loadById(1);
+            System.out.println(unit.getAttributes());
 
-            List<Entity> brands = brandRepository.loadAll();
-            System.out.println(brands);
+            List<Entity> units = unitRepository.loadAll();
+            System.out.println(units);
 
-            brand.setAtribute("name", "Nike");
+            unit.setAtribute("abbreviation", "kg");
+            unit.setAtribute("name", "Kilograma");
 
-            brandRepository.update(1, brand);
+            unitRepository.update(1, unit);
 
-            brand = brandRepository.loadById(1);
-            System.out.println(brand.getAttributes());
+            unit = unitRepository.loadById(1);
+            System.out.println(unit.getAttributes());
 
-            brandRepository.delete(1);
+            unitRepository.delete(1);
 
-            brands = brandRepository.loadAll();
-            System.out.println(brands);
+            units = unitRepository.loadAll();
+            System.out.println(units);
 
         } catch (Exception e) {
             e.printStackTrace();
