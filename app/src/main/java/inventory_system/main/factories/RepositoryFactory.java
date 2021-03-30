@@ -1,14 +1,8 @@
 package inventory_system.main.factories;
 
 import inventory_system.data.protocols.adapters.DatabaseConnection;
-import inventory_system.data.protocols.database.BrandRepository;
-import inventory_system.data.protocols.database.CategoryRepository;
-import inventory_system.data.protocols.database.StatusRepository;
-import inventory_system.data.protocols.database.UnitRepository;
-import inventory_system.infra.database.postgre.BrandPostgreRepository;
-import inventory_system.infra.database.postgre.CategoryPostgreRepository;
-import inventory_system.infra.database.postgre.StatusPostgreRepository;
-import inventory_system.infra.database.postgre.UnitPostgreRepository;
+import inventory_system.data.protocols.database.*;
+import inventory_system.infra.database.postgre.*;
 
 public class RepositoryFactory {
 
@@ -26,6 +20,10 @@ public class RepositoryFactory {
 
     public static CategoryRepository makeCategoryRepository (DatabaseConnection connection) {
         return new CategoryPostgreRepository(connection);
+    }
+
+    public static ProductRepository makeProductRepository (DatabaseConnection connection) {
+        return new ProductPostgreRepository(connection);
     }
 
 }

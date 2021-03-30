@@ -18,7 +18,10 @@ public class ViewEntity implements Entity {
     }
 
     public Object getAttribute (String key) {
-        return this.attributes.get(key);
+        if (this.attributes.get(key) == null) {
+            return null;
+        }
+        return this.attributes.get(key).toString();
     }
 
     public void setAtribute (String key, Object value) {

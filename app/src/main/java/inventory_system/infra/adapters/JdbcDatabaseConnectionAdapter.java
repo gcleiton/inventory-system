@@ -79,7 +79,12 @@ public class JdbcDatabaseConnectionAdapter implements DatabaseConnection {
     }
 
     private void bindParam (PreparedStatement statement, int key, String value) throws SQLException {
-        statement.setObject(key, value);
+        if (value == null) {
+            statement.setNull(key, Types.VARCHAR);
+            return;
+        }
+
+        statement.setString(key, value);
     }
 
     private PreparedStatement buildStatement (String query) throws SQLException {
