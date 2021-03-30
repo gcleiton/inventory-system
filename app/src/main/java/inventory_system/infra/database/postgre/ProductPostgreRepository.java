@@ -44,8 +44,6 @@ public class ProductPostgreRepository implements ProductRepository {
 
         List<String> params = this.getValues(entity);
 
-        System.out.println(params);
-
         this.connection.execute(query, params);
     }
 
@@ -55,13 +53,8 @@ public class ProductPostgreRepository implements ProductRepository {
                 "quantity = ?::integer, brand_id = ?::integer, unit_id = ?::integer, status_id = ?::integer " +
                 "WHERE code = ?";
 
-        System.out.println(query);
-
-
         List<String> params = this.getValues(entity);
         params.add(code);
-
-        System.out.println(params);
 
         this.connection.execute(query, params);
     }
