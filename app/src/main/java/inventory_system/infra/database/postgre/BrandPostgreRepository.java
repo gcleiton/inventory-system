@@ -1,7 +1,7 @@
 package inventory_system.infra.database.postgre;
 
 import inventory_system.data.protocols.adapters.DatabaseConnection;
-import inventory_system.data.protocols.database.StatusRepository;
+import inventory_system.data.protocols.database.BrandRepository;
 import inventory_system.domain.entities.Entity;
 import inventory_system.main.factories.EntityFactory;
 
@@ -10,20 +10,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class StatusPostgreRepository implements StatusRepository {
+public class BrandPostgreRepository implements BrandRepository {
     private DatabaseConnection connection;
 
-    public StatusPostgreRepository(DatabaseConnection connection) {
+    public BrandPostgreRepository(DatabaseConnection connection) {
         this.connection = connection;
     }
 
     public List<Entity> loadAll () throws SQLException {
-        List<Map<String, Object>> data = connection.select("select * from statuses");
+        List<Map<String, Object>> data = connection.select("select * from brands");
         return EntityFactory.makeEntities(data);
     }
 
     public Entity loadById (int id) throws SQLException {
-        String query = "SELECT * from statuses WHERE id = ?::integer";
+        String query = "SELECT * from brands WHERE id = ?::integer";
 
         List<String> params = new ArrayList<String>();
         params.add(String.valueOf(id));
@@ -34,7 +34,7 @@ public class StatusPostgreRepository implements StatusRepository {
     }
 
     public void add (Entity entity) throws SQLException {
-        String query = "INSERT INTO statuses (name, description) VALUES (?, ?)";
+        String query = "INSERT INTO brands (name, description) VALUES (?, ?)";
         List<String> params = new ArrayList<String>();
         params.add(entity.getAttribute("name").toString());
         params.add(entity.getAttribute("description").toString());
@@ -43,7 +43,7 @@ public class StatusPostgreRepository implements StatusRepository {
     }
 
     public void update (int id, Entity entity) throws SQLException {
-        String query = "UPDATE statuses SET name = ?, description = ? WHERE id = ?::integer";
+        String query = "UPDATE brands SET name = ?, description = ? WHERE id = ?::integer";
 
         List<String> params = new ArrayList<String>();
         params.add(entity.getAttribute("name").toString());
@@ -54,7 +54,7 @@ public class StatusPostgreRepository implements StatusRepository {
     }
 
     public void delete (int id) throws SQLException {
-        String query = "DELETE from statuses WHERE id = ?::integer";
+        String query = "DELETE from brands WHERE id = ?::integer";
 
         List<String> params = new ArrayList<>();
         params.add(String.valueOf(id));
