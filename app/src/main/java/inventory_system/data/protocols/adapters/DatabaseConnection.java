@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface DatabaseConnection {
-    public void connect () throws SQLException, ClassNotFoundException;
+    public void connect ();
     public void disconnect () throws SQLException;
     public boolean isConnected () throws SQLException;
 

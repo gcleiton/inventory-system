@@ -27,3 +27,13 @@ application {
     // Define the main class for the application.
     mainClass = 'inventory_system.main.App'
 }
+
+run{
+    standardInput = System.in
+}
+
+compileJava.options.encoding = 'UTF-8'
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}

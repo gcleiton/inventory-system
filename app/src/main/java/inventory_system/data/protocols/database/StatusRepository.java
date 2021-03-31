@@ -4,7 +4,6 @@ import inventory_system.domain.entities.Entity;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Map;
 
 public interface StatusRepository {
 

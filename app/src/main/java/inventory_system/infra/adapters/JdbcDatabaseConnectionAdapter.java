@@ -123,4 +123,12 @@ public class JdbcDatabaseConnectionAdapter implements DatabaseConnection {
     private String buildUri () {
         return "jdbc:" + configs.get("driver")  + "://" + configs.get("host") + ":" + configs.get("port") + "/" + configs.get("database");
     }
+
+    private static class DatabaseConnectionHolder {
+        private static final JdbcDatabaseConnectionAdapter INSTANCE = new JdbcDatabaseConnectionAdapter();
+    }
+
+    public static DatabaseConnection getInstance() {
+        return JdbcDatabaseConnectionAdapter.DatabaseConnectionHolder.INSTANCE;
+    }
 }
