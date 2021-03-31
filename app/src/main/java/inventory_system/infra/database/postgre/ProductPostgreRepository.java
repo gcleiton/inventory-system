@@ -5,7 +5,6 @@ import inventory_system.data.protocols.database.ProductRepository;
 import inventory_system.domain.entities.Entity;
 import inventory_system.main.factories.EntityFactory;
 
-import java.sql.Array;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,9 +59,45 @@ public class ProductPostgreRepository implements ProductRepository {
     }
 
     public void delete (String code) throws SQLException {
-        String query = "DELETE from products WHERE code = ?";
+        String reportsQuery = "DELETE from quantity_reports WHERE product_id = '" + code + "'";
+        this.connection.execute(reportsQuery);
+
+        String query = "DELETE from products WHERE code = '" + code + "'";
+
+        this.connection.execute(query);
+    }
+
+    public List<Entity> loadQuantityReports (String code) throws SQLException {
+        String query = "SELECT * FROM quantity_reports WHERE product_id = '" + code + "'";
+        List<Map<String, Object>> data = this.connection.select(query);
+        return EntityFactory.makeEntities(data);
+    }
+
+    public List<Entity> loadCategories (String code) throws SQLException {
+        String query = "SELECT DISTINCT c.id, c.name, c.description, c.created_at, c.updated_at " +
+                "FROM categories c " +
+                "JOIN category_product cp ON c.id = cp.category_id " +
+                "JOIN products p ON p.code = cp.product_id " +
+                "where p.code = '" + code + "'";
+
+        List<Map<String, Object>> data = this.connection.select(query);
+        return EntityFactory.makeEntities(data);
+    }
+
+    public void attachCategories (String code, List<Integer> categoryIds) throws SQLException {
+        String removeQuery = "DELETE FROM category_product WHERE product_id = '" + code + "'";
+        this.connection.execute(removeQuery);
+
+        for (int categoryId : categoryIds) {
+            this.attachCategory(code, categoryId);
+        }
+    }
+
+    private void attachCategory (String code, int categoryId) throws SQLException {
+        String query = "INSERT INTO category_product (category_id, product_id) VALUES (?::integer, ?)";
 
         List<String> params = new ArrayList<>();
+        params.add(String.valueOf(categoryId));
         params.add(code);
 
         this.connection.execute(query, params);

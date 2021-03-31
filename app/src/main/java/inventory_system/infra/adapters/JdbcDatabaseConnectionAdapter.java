@@ -55,7 +55,9 @@ public class JdbcDatabaseConnectionAdapter implements DatabaseConnection {
 
     public void execute (String query, List<String> params) throws SQLException {
         PreparedStatement statement = this.buildStatement(query);
-        this.setParams(statement, params);
+        if (params != null) {
+            this.setParams(statement, params);
+        }
         statement.execute();
     }
 
